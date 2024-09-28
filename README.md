@@ -1,12 +1,7 @@
 <div align="center">
-  Amazing GitHub Template - Sane defaults for your next project!
+  <h1>Amazing GitHub Template - Sane defaults for your next project!</h1>
   <br />
   <br />
-</div>
-
-<div align="center">
-<br />
-
 </div>
 
 <details open="open">
@@ -17,9 +12,9 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Usage](#usage)
-    - [Cookiecutter template](#cookiecutter-template)
     - [Manual setup](#manual-setup)
-    - [Variables reference](#variables-reference)
+    - [Deploying to AWS](#deploying-to-aws)
+    - [Environment variables](#environment-variables)
 - [License](#license)
 
 </details>
@@ -35,16 +30,6 @@
 Open Source Software is not about the code in the first place but the communications and community. People love good documentation and obvious workflows. If your software solves some problem, but nobody can figure out how to use it or, for example, how to create an effective bug report, there's something very bad going on. Did you hear about Readme Driven Development? Check out the awesome [article written by GitHub co-founder Tom Preston-Werner](https://tom.preston-werner.com/2010/08/23/readme-driven-development.html).
 
 There are many great README or issues templates available on GitHub, however, you have to find them yourself and combine different templates yourself. In addition, if you want extensive docs like CODE_OF_CONDUCT.md, CONTRIBUTING.md, SECURITY.md or even advanced GitHub features like a pull request template, additional labels, code scanning, and automatic issue/PR closing and locking you have to do much more work. Your time should be focused on creating something **amazing**. You shouldn't be doing the same tasks over and over like creating your GitHub project template from scratch. Follow the **don’t repeat yourself** principle. Use a template **and go create something amazing**!
-
-<details open>
-<summary>Additional info</summary>
-<br>
-
-This project is the result of huge research. I'm a long-time GitHub user so I've seen more than [7.3k](https://github.com/dec0dOS?tab=stars) READMEs so far. I've started writing docs for my open source projects (that are currently in their early stages so they exist in the private space for now). After I've analyzed many popular GitHub READMEs and other GitHub-related docs and features I've tried to create a general-propose template that may be useful for any project.
-
-Of course, no template will serve all the projects since your needs may be different. So [Cookiecutter](https://github.com/cookiecutter/cookiecutter) comes to the rescue. It allows [Jinja template language](https://jinja.palletsprojects.com) to be used for complex cases. Just enter up the project preferences you want in the Cookiecutter interactive menu and that's it. There is a manual setup that could be useful for your existing projects (or if you don't want to use Cookiecutter for some reason). **This README.md file is not a template itself**, you should [download the precompiled template](https://github.com/dec0dOS/amazing-github-template/releases/download/latest/template.zip) and replace the predefined values, then remove unused sections.
-
-</details>
 
 </td>
 </tr>
@@ -63,26 +48,64 @@ Of course, no template will serve all the projects since your needs may be diffe
 
 1. The easiest way to install Cookiecutter is by running:
 
-```sh
-pip install --user cookiecutter
-```
+    ```sh
+    pip install --user cookiecutter
+    ```
 
 ### Usage
 
 #### Manual setup
 
-1. After installing Cookiecutter, all you need to do is to run the following command:
+Please follow these steps for manual setup:
+1. Set-up the Discord bot on the Discord Developer Portal and add it to your server.
+2. Download this GitHub repository.
+3. Create a virtual environment.
 
-```sh
-cookiecutter gh:dec0dOS/amazing-github-template
-```
+    ```
+    python3 -m venv <myenvname>
+    ```
 
-#### Variables reference
+4. Activate virtual environment.
 
-Please note that entered values are case-sensitive.
-Default values are provided as an example to help you figure out what should be entered.
+    ```
+    cd venv
+    Scripts\Activate.ps1
+    ```
+    Or different Activate script, if you are not working from Visual Code.
 
-> On manual setup, you need to replace only values written in **uppercase**.
+5. Install packages from requirements.txt
+
+    ```
+    pip install -r /path/to/requirements.txt
+    ```
+
+#### Deploying to AWS
+
+1. Create a AWS RDS instance to host the PostgreSQL database.
+2. Make sure the program works, run at least once to check if the discord bot is running.
+3. In the ```.env``` file, change the ```CURRENT_ENVIRONMENT_NAME``` variable to use ```PROD``` .
+4. Run Docker command from the terminal to build an image:
+    ```
+    docker build -t questions-answer-matcher-container .
+    ```
+5. Run AWS CLI command to push the Docker Image:
+    ```
+    aws lightsail push-container-image --service-name question-answer-matcher-service --label questions-answer-matcher-container --image questions-answer-matcher-container
+    ```
+6. Change the ```containers.json``` in the app directory to use the latest image
+    ```
+    question-answer-matcher-service.questions-answer-matcher-prodX.X
+    ```
+7. Create an AWS deployment like this:
+    ```
+    aws lightsail create-container-service-deployment --service-name question-answer-matcher-service --containers file://containers.json
+    ```
+8. Check AWS Web UI for any errors.
+
+
+#### Environment variables
+
+in the .env file, replace these environment variables with your own values.
 
 | Name                       | Default value      | Description                                                                 |
 | -------------------------- | ------------------ | --------------------------------------------------------------------------- |
@@ -91,21 +114,6 @@ Default values are provided as an example to help you figure out what should be 
 | GITHUB_USERNAME            | dec0dOS            | Your GitHub username **without @**                                          |
 | FULL_NAME                  | Alexey Potapov     | Your full name                                                              |
 | OPEN_SOURCE_LICENSE        | MIT license        | Full OSS license name                                                       |
-| modern_header              | y                  | Use HTML to prettify your header                                            |
-| table_in_about             | n                  | Use table to wrap around About section                                      |
-| include_logo               | y                  | Include Logo section. Only valid when `modern_header == y`          |
-| include_badges             | y                  | Include section for badges                                                  |
-| include_toc                | y                  | Include Table of Contents                                                   |
-| include_screenshots        | y                  | Include Screenshots section                                                 |
-| include_project_assistance | y                  | Include Project assistance section                                          |
-| include_authors            | y                  | Include Authors & contributors section                                      |
-| include_security           | y                  | Include Security section and SECURITY.md file                               |
-| include_acknowledgements   | y                  | Include Acknowledgements section                                            |
-| include_code_of_conduct    | y                  | Include CODE_OF_CONDUCT.md file                                             |
-| include_workflows          | y                  | Include .github/workflows directory                                         |
-| use_codeql                 | y                  | Use [CodeQL](https://securitylab.github.com/tools/codeql/)                  |
-| use_conventional_commits   | y                  | Add [Conventional Commits](https://www.conventionalcommits.org) notice      |
-| use_github_discussions     | n                  | Use [GitHub Discussions](https://docs.github.com/en/discussions/quickstart) |
 
 ## License
 
